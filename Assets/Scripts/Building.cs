@@ -65,12 +65,12 @@ public class Building : MonoBehaviour
 
     void generateCube()
     {
-        if(currentHeight >= MAX_HEIGHT) return;
-
-        if(cubesPerFloor == MAX_CUBES_PER_FLOOR ){
+        if(cubesPerFloor == MAX_CUBES_PER_FLOOR) { 
             resetCoordinates();
             generatePositions();
         }
+
+        if(currentHeight >= MAX_HEIGHT) return;
 
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.transform.position = yPositions.Dequeue();
