@@ -5,10 +5,15 @@ using UnityEngine;
 public class Building : MonoBehaviour
 {
     List<GameObject> building = new List<GameObject>();
-    int interval = 2; 
+    public GameObject human;
+    public GameObject armWithAxe;
+    float interval = 0.5f; 
     float nextTime = 0;
     private int numberCube = 0;
     private Queue<Vector3> yPositions = new Queue<Vector3>();
+
+    public float speed = 1f;
+    public float maxRotation = 1f;
 
     private float currentX = -1.0f;
     private float currentY = 0.75f;
@@ -32,6 +37,10 @@ public class Building : MonoBehaviour
         firstBlock.transform.localScale = DEFAULT_SCALE;
         building.Add(firstBlock);
         cubesPerFloor++;
+        human = GameObject.FindWithTag("human1");
+        human.SetActive(true);
+        armWithAxe = GameObject.FindWithTag("armWithAxe");
+        Debug.Log(human.tag);
     }
 
     void generatePositions() {
@@ -54,6 +63,11 @@ public class Building : MonoBehaviour
         }
     }
 
+    void moveArm(){
+        //armWithAxe.transform.Rotate(0.0f, 0.0f, 10.0f, Space.Self);
+        armWithAxe.transform.rotation = Quaternion.Euler(0f, 0f, 5f * Mathf.Sin(Time.time * 20f));
+    }
+
     void resetCoordinates() {
         currentX = -1.0f;
         currentZ = -1.0f;
@@ -72,6 +86,7 @@ public class Building : MonoBehaviour
 
         if(currentHeight >= MAX_HEIGHT) return;
 
+        moveArm();
         GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
         cube.transform.position = yPositions.Dequeue();
         cube.transform.localScale = DEFAULT_SCALE;
