@@ -22,25 +22,19 @@ public class Building : MonoBehaviour
     private int cubesPerFloor = 0;
     private int currentHeight = 0;
 
-    private Vector3 DEFAULT_SCALE = new Vector3(1, 1, 1);
+    private Vector3 DEFAULT_BRICK_SCALE = new Vector3(1, 1, 1);
+    private Vector3 DEFAULT_WINDOW_SCALE = new Vector3(50, 50, 50);
     private int MAX_CUBES_PER_FLOOR = 9;
-    private int MAX_HEIGHT = 10;
+    private int MAX_HEIGHT = 11;
     private int BUILDING_WIDTH = 3;
     
     // Start is called before the first frame update
     void Start()
     {
         generatePositions();
-        GameObject firstBlock = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        firstBlock.transform.parent = transform;
-        firstBlock.transform.localPosition = yPositions.Dequeue();
-        firstBlock.transform.localScale = DEFAULT_SCALE;
-        building.Add(firstBlock);
-        cubesPerFloor++;
         human = GameObject.FindWithTag("human1");
         human.SetActive(true);
         armWithAxe = GameObject.FindWithTag("armWithAxe");
-        Debug.Log(human.tag);
     }
 
     void generatePositions() {
@@ -87,14 +81,23 @@ public class Building : MonoBehaviour
         if(currentHeight >= MAX_HEIGHT) return;
 
         moveArm();
-        GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+        
+        GameObject cube;
+
+        if(cubesPerFloor % 2 == 1 && currentHeight % 2 == 1) {
+            UnityEngine.Object pPrefab = Resources.Load("Window"); // note: not .prefab!
+            cube = (GameObject)GameObject.Instantiate(pPrefab, Vector3.zero, Quaternion.Euler(90f, 0f, 0f));
+            cube.transform.localScale = DEFAULT_WINDOW_SCALE;
+        } else {
+            UnityEngine.Object pPrefab = Resources.Load("Brick"); // note: not .prefab!
+            cube = (GameObject)GameObject.Instantiate(pPrefab, Vector3.zero, Quaternion.identity);
+            cube.transform.localScale = DEFAULT_BRICK_SCALE;
+        }
         cube.transform.position = yPositions.Dequeue();
-        cube.transform.localScale = DEFAULT_SCALE;
         cube.transform.parent = transform;
 
         building.Add(cube);
+
         cubesPerFloor++;
-  
-        Debug.Log("Cube generated");
     }
 }
